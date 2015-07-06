@@ -706,23 +706,24 @@ int main(int argc, char *argv[])
 {
     argList::addNote
     (
-        "split cells with flat faces"
+        "Split cells with flat faces"
     );
     #include "addOverwriteOption.H"
     argList::noParallel();
-    argList::validArgs.append("edgeAngle [0..360]");
+//    argList::validArgs.append("edgeAngle [0..360]");
+    argList::validArgs.append("cell set name");
 
-    argList::addOption
-    (
-        "set",
-        "name",
-        "split cells from specified cellSet only"
-    );
-    argList::addBoolOption
-    (
-        "geometry",
-        "use geometric cut for hexes as well"
-    );
+//    argList::addOption
+//    (
+//        "set",
+//        "name",
+//        "split cells from specified cellSet only"
+//    );
+//    argList::addBoolOption
+//    (
+//        "geometry",
+//        "use geometric cut for hexes as well"
+//    );
     argList::addBoolOption
     (
         "flip",
@@ -740,11 +741,11 @@ int main(int argc, char *argv[])
     #include "createPolyMesh.H"
     const word oldInstance = mesh.pointsInstance();
 
-    const scalar featureAngle = args.argRead<scalar>(1);
+    const scalar featureAngle = 0;//args.argRead<scalar>(1);
     const scalar minCos = Foam::cos(degToRad(featureAngle));
     const scalar minSin = Foam::sin(degToRad(featureAngle));
 
-    const bool readSet   = args.optionFound("set");
+    const bool readSet   = true; //args.optionFound("set");
     const bool geometry  = args.optionFound("geometry");
     const bool overwrite = args.optionFound("overwrite");
     const bool flip      = args.optionFound("flip");
@@ -756,7 +757,7 @@ int main(int argc, char *argv[])
         << "edge snapping tol : " << edgeTol << nl;
     if (readSet)
     {
-        Info<< "candidate cells   : cellSet " << args["set"] << nl;
+        Info<< "candidate cells   : cellSet " << args[1] << nl;//args["set"] << nl;
     }
     else
     {
@@ -784,7 +785,7 @@ int main(int argc, char *argv[])
     if (readSet)
     {
         // Read cells to cut from cellSet
-        cellSet cells(mesh, args["set"]);
+        cellSet cells(mesh, args[1]); //"set"]);
 
         cellsToCut = cells;
     }
